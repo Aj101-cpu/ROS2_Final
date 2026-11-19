@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """EE3280 Lab 8 - Line Follower.
 
 The original image-processing exercise is preserved: change `preview_image`
@@ -23,10 +24,10 @@ class OpenCVSubscriber(Node):
         super().__init__('opencv_subscriber')
 
         # Added for safe testing. Default is preview-only (no movement).
-        self.declare_parameter('enable_motion', False)
+        self.declare_parameter('enable_motion', True)
         self.declare_parameter('kp', 0.25)
-        self.declare_parameter('straight_speed', 0.025)
-        self.declare_parameter('curve_speed', 0.015)
+        self.declare_parameter('straight_speed', 0.25)
+        self.declare_parameter('curve_speed', 0.15)
         self.declare_parameter('max_angular_speed', 0.25)
         self.enable_motion = bool(self.get_parameter('enable_motion').value)
         self.kp = float(self.get_parameter('kp').value)
@@ -91,7 +92,7 @@ class OpenCVSubscriber(Node):
 
         # Always build an output image (including frames with no contour).
         output_image = cv2.cvtColor(inverted_image, cv2.COLOR_GRAY2BGR)
-        linear_x = 0.0  # default stop if no tape is detected
+        linear_x = self.straight_speed  # default stop if no tape is detected
         angular_z = 0.0
         tape_found = False
 
